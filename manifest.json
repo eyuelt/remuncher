@@ -1,0 +1,22 @@
+{
+    "author": "Eyuel Tessema <eyueltessema@gmail.com>",
+    "manifest_version": 2,
+    "name": "remuncher",
+    "version": "0.1",
+    //"default_locale": "en",
+    "description": "This extension gives you reminders to put in your Munchery order.",
+    //"icons": {
+        //"128": "icon_128.png"
+    //},
+    "browser_action": {
+        //"default_icon": "icon.png"
+    },
+    "background": {
+        "persistent": false,
+        "scripts": ["background.js"]
+    },
+    "permissions": [
+        "alarms"
+    ],
+    "minimum_chrome_version": "22"
+}
