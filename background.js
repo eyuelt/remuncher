@@ -43,7 +43,7 @@ function timeOfNextWakeUp() {
     now.setHours(now.getHours() + 1);
   } else {
     now.setHours(9);
-    now.setDate(now.getDate() + 1); //what about weekends?
+    now.setDate(now.getDate() + (now.getDay() == 5 ? 3 : 1));
   }
   return now.getTime();
 }
