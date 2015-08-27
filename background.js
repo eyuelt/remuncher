@@ -14,7 +14,7 @@ function setLastSavedDate(lastSavedDate, callback) {
 }
 
 function scheduleNextAlarm() {
-  chrome.alarms.create('refresh', {when: timeOfNextWakeUp()});
+  chrome.alarms.create("refresh", {when: timeOfNextWakeUp()});
 }
 
 function isNotToday(date) {
@@ -24,15 +24,18 @@ function isNotToday(date) {
 function onAlarm(alarm) {
   fetchLastSavedDate(function(date) {
     if (isNotToday(date)) alert("Don't forget to order Munchery!");
-    else console.log("Already ordered today!");
   });
   scheduleNextAlarm();
 }
 
-function onExtensionButtonClicked(tab) {
+function turnOffReminders() {
   setLastSavedDate(new Date(), function() {
     alert("Reminders turned off for today");
   });
+}
+
+function onExtensionButtonClicked(tab) {
+  turnOffReminders();
 }
 
 function timeOfNextWakeUp() {
@@ -51,3 +54,16 @@ function timeOfNextWakeUp() {
 chrome.alarms.onAlarm.addListener(onAlarm);
 chrome.browserAction.onClicked.addListener(onExtensionButtonClicked);
 scheduleNextAlarm();
+
+function handleMessage(request, sender, sendResponse) {
+  var result = "did nothing";
+  var success = false;
+  if (request.say == "didPressCheckoutButton") {
+    turnOffReminders();
+    result = "turned off reminders for today";
+    success = true;
+  }
+  sendResponse({result: result, success: success});
+}
+
+chrome.runtime.onMessage.addListener(handleMessage);

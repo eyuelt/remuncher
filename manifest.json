@@ -14,6 +14,10 @@
         "persistent": false,
         "scripts": ["background.js"]
     },
+    "content_scripts": [{
+        "matches": ["https://munchery.com/checkout/*"],
+        "js": ["content_script.js"]
+    }],
     "permissions": [
         "alarms",
         "storage"
