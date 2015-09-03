@@ -30,7 +30,7 @@ function onAlarm(alarm) {
 
 function turnOffReminders() {
   setLastSavedDate(new Date(), function() {
-    alert("Reminders turned off for today");
+    alert("Turning off reminders for today!");
   });
 }
 
@@ -38,6 +38,7 @@ function onExtensionButtonClicked(tab) {
   turnOffReminders();
 }
 
+//every hour from 9am to 2pm on weekdays
 function timeOfNextWakeUp() {
   var now = new Date();
   now.setMinutes(0);
@@ -46,16 +47,13 @@ function timeOfNextWakeUp() {
     now.setHours(now.getHours() + 1);
   } else {
     now.setHours(9);
-    now.setDate(now.getDate() + (now.getDay() == 5 ? 3 : 1));
+    now.setDate(now.getDate() + (now.getDay() == 5 ? 3 : 1)); //skip weekends
   }
   return now.getTime();
 }
 
-chrome.alarms.onAlarm.addListener(onAlarm);
-chrome.browserAction.onClicked.addListener(onExtensionButtonClicked);
-scheduleNextAlarm();
-
-function handleMessage(request, sender, sendResponse) {
+//handle receiving messages from the content script
+function onMessage(request, sender, sendResponse) {
   var result = "did nothing";
   var success = false;
   if (request.say == "didPressCheckoutButton") {
@@ -66,4 +64,11 @@ function handleMessage(request, sender, sendResponse) {
   sendResponse({result: result, success: success});
 }
 
-chrome.runtime.onMessage.addListener(handleMessage);
+function main() {
+  chrome.alarms.onAlarm.addListener(onAlarm);
+  chrome.runtime.onMessage.addListener(onMessage);
+  chrome.browserAction.onClicked.addListener(onExtensionButtonClicked);
+  scheduleNextAlarm();
+}
+
+main();
