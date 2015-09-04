@@ -50,6 +50,13 @@ function saveOptions() {
     setTimeout(function() {
       statusElem.textContent = '';
     }, 750);
+    didSaveOptions();
+  });
+}
+
+function didSaveOptions() {
+  chrome.runtime.sendMessage({say: "didSaveOptions"}, function(resp) {
+    console.log("'remuncher' extension says: " + resp.result);
   });
 }
 

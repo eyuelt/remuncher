@@ -8,13 +8,9 @@ function main() {
 }
 
 function didPressCheckoutButton() {
-  try {
-    chrome.runtime.sendMessage({say: "didPressCheckoutButton"}, function(resp) {
-      console.log("'remuncher' extension says: " + resp.result);
-    });
-  } catch(e) {
-    alert(e);
-  }
+  chrome.runtime.sendMessage({say: "didPressCheckoutButton"}, function(resp) {
+    console.log("'remuncher' extension says: " + resp.result);
+  });
 }
 
 main();

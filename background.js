@@ -77,13 +77,19 @@ function timeOfNextWakeUp() {
   return now;
 }
 
-//handle receiving messages from the content script
+//handle messages received from the other scripts
 function onMessage(request, sender, sendResponse) {
   var result = "did nothing";
   var success = false;
   if (request.say == "didPressCheckoutButton") {
     turnOffReminders();
     result = "turned off reminders for today";
+    success = true;
+  } else if (request.say == "didSaveOptions") {
+    updateSettings(function() {
+      scheduleNextAlarm();
+    });
+    result = "updated next alarm time";
     success = true;
   }
   sendResponse({result: result, success: success});
