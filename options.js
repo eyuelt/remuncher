@@ -1,7 +1,8 @@
 var defaults = {
   startHour: 9,
   endHour: 14,
-  skipWeekends: true
+  skipWeekends: true,
+  checkoutButtonClassName: "large orange checkout"
 }
 
 function getHourFromInputVals(startOrEndStr) {
@@ -40,10 +41,12 @@ function setInputValsFromEndHour(endHour) { return setInputValsFromHour(endHour,
 // Saves options to chrome.storage
 function saveOptions() {
   var skipWeekends = document.getElementById('skipWeekends').checked;
+  var checkoutButtonClassName = document.getElementById('checkoutButtonClassName').value;
   chrome.storage.sync.set({
     startHour: getStartHourFromInputVals(),
     endHour: getEndHourFromInputVals(),
-    skipWeekends: skipWeekends
+    skipWeekends: skipWeekends,
+    checkoutButtonClassName: checkoutButtonClassName
   }, function() {
     var statusElem = document.getElementById('status');
     statusElem.textContent = 'Options saved';
@@ -65,11 +68,13 @@ function restoreOptions() {
   chrome.storage.sync.get({
     startHour: defaults.startHour,
     endHour: defaults.endHour,
-    skipWeekends: defaults.skipWeekends
+    skipWeekends: defaults.skipWeekends,
+    checkoutButtonClassName: defaults.checkoutButtonClassName
   }, function(items) {
     setInputValsFromStartHour(items.startHour);
     setInputValsFromEndHour(items.endHour);
     document.getElementById('skipWeekends').checked = items.skipWeekends;
+    document.getElementById('checkoutButtonClassName').value = items.checkoutButtonClassName;
   });
 }
 

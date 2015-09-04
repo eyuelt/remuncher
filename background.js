@@ -1,18 +1,21 @@
 var settings = {
   startHour: 9,
   endHour: 14,
-  skipWeekends: true
+  skipWeekends: true,
+  checkoutButtonClassName: "large orange checkout"
 }
 
-function updateSettings(callback) {
+function getSettings(callback) {
   chrome.storage.sync.get({
     startHour: settings.startHour,
     endHour: settings.endHour,
-    skipWeekends: settings.skipWeekends
+    skipWeekends: settings.skipWeekends,
+    checkoutButtonClassName: settings.checkoutButtonClassName
   }, function(items) {
     settings.startHour = items.startHour;
     settings.endHour = items.endHour;
     settings.skipWeekends = items.skipWeekends;
+    settings.checkoutButtonClassName = items.checkoutButtonClassName;
     callback();
   });
 }
@@ -86,10 +89,13 @@ function onMessage(request, sender, sendResponse) {
     result = "turned off reminders for today";
     success = true;
   } else if (request.say == "didSaveOptions") {
-    updateSettings(function() {
+    getSettings(function() {
       scheduleNextAlarm();
     });
     result = "updated next alarm time";
+    success = true;
+  } else if (request.say == "getCheckoutButtonClassName") {
+    result = settings.checkoutButtonClassName;
     success = true;
   }
   sendResponse({result: result, success: success});
@@ -99,7 +105,7 @@ function main() {
   chrome.alarms.onAlarm.addListener(onAlarm);
   chrome.runtime.onMessage.addListener(onMessage);
   chrome.browserAction.onClicked.addListener(onExtensionButtonClicked);
-  updateSettings(function() {
+  getSettings(function() {
     scheduleNextAlarm();
   });
 }
