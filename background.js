@@ -20,19 +20,19 @@ function getSettings(callback) {
   });
 }
 
-//key for use in chrome local storage
+//key for use in chrome storage
 LAST_SAVED_DATE_KEY = "last_saved_date";
 
 function fetchLastSavedDate(callback) {
   var obj = {};
   obj[LAST_SAVED_DATE_KEY] = 0;
-  chrome.storage.local.get(obj, function(items) { callback(new Date(items[LAST_SAVED_DATE_KEY])); });
+  chrome.storage.sync.get(obj, function(items) { callback(new Date(items[LAST_SAVED_DATE_KEY])); });
 }
 
 function setLastSavedDate(lastSavedDate, callback) {
   var obj = {};
   obj[LAST_SAVED_DATE_KEY] = lastSavedDate.getTime();
-  chrome.storage.local.set(obj, function() { callback(); });
+  chrome.storage.sync.set(obj, function() { callback(); });
 }
 
 function scheduleNextAlarm() {
