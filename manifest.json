@@ -18,9 +18,13 @@
         "matches": ["https://munchery.com/checkout/*"],
         "js": ["content_script.js"]
     }],
+    "options_ui": {
+      "page": "options.html",
+      "chrome_style": true
+    },
     "permissions": [
         "alarms",
         "storage"
     ],
-    "minimum_chrome_version": "22"
+    "minimum_chrome_version": "40"
 }

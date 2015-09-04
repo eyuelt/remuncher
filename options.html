@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>Options</title>
+  </head>
+  <body>
+    <p>
+      Show reminders between&nbsp;
+      <input type="number" id="startHourNumber" min="1" max="12">
+      <select id="startHourPeriod">
+        <option value="am">am</option>
+        <option value="pm">pm</option>
+      </select>
+      &nbsp;and&nbsp;
+      <input type="number" id="endHourNumber" min="1" max="12">
+      <select id="endHourPeriod">
+        <option value="am">am</option>
+        <option value="pm">pm</option>
+      </select>
+    </p>
+    <p>
+      <label>
+        Skip weekends?&nbsp;
+        <input type="checkbox" id="skipWeekends">
+      </label>
+    </p>
+    <div style="float:right;">
+      <span id="status" style="color:gray; margin-right:10px;"></span>
+      <button id="save">Save</button>
+    </div>
+    <script src="options.js"></script>
+  </body>
+</html>

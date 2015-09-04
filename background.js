@@ -1,3 +1,22 @@
+var settings = {
+  startHour: 9,
+  endHour: 14,
+  skipWeekends: true
+}
+
+function updateSettings(callback) {
+  chrome.storage.sync.get({
+    startHour: settings.startHour,
+    endHour: settings.endHour,
+    skipWeekends: settings.skipWeekends
+  }, function(items) {
+    settings.startHour = items.startHour;
+    settings.endHour = items.endHour;
+    settings.skipWeekends = items.skipWeekends;
+    callback();
+  });
+}
+
 //key for use in chrome local storage
 LAST_SAVED_DATE_KEY = "last_saved_date";
 
@@ -14,7 +33,7 @@ function setLastSavedDate(lastSavedDate, callback) {
 }
 
 function scheduleNextAlarm() {
-  chrome.alarms.create("refresh", {when: timeOfNextWakeUp()});
+  chrome.alarms.create("refresh", {when: timeOfNextWakeUp().getTime()});
 }
 
 function isNotToday(date) {
@@ -38,18 +57,24 @@ function onExtensionButtonClicked(tab) {
   turnOffReminders();
 }
 
-//every hour from 9am to 2pm on weekdays
+function shouldSkipDay(date) {
+  return settings.skipWeekends && (date.getDay() == 6 || date.getDay() == 0);
+}
+
 function timeOfNextWakeUp() {
   var now = new Date();
   now.setMinutes(0);
   now.setSeconds(0);
-  if (now.getHours() >= 9 && now.getHours() < 14) { //between 9am and 2pm
+  if (!shouldSkipDay(now) && (now.getHours() >= settings.startHour && now.getHours() < settings.endHour)) {
     now.setHours(now.getHours() + 1);
   } else {
-    now.setHours(9);
-    now.setDate(now.getDate() + (now.getDay() == 5 ? 3 : 1)); //skip weekends
+    now.setHours(settings.startHour);
+    now.setDate(now.getDate() + 1);
+    while (shouldSkipDay(now)) {
+      now.setDate(now.getDate() + 1);
+    }
   }
-  return now.getTime();
+  return now;
 }
 
 //handle receiving messages from the content script
@@ -68,7 +93,9 @@ function main() {
   chrome.alarms.onAlarm.addListener(onAlarm);
   chrome.runtime.onMessage.addListener(onMessage);
   chrome.browserAction.onClicked.addListener(onExtensionButtonClicked);
-  scheduleNextAlarm();
+  updateSettings(function() {
+    scheduleNextAlarm();
+  });
 }
 
 main();
